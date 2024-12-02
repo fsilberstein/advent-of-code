@@ -37,7 +37,7 @@ if __name__ == "__main__":
     assert question01([3, 4, 2, 1, 3, 3], [4, 3, 5, 3, 9, 3]) == 11
     assert question02([3, 4, 2, 1, 3, 3], [4, 3, 5, 3, 9, 3]) == 31
 
-    with open("2024/day01_01_input.txt", "r") as f:
+    with open("2024/day01_input.txt", "r") as f:
         # for each line, split on "   " and add the first part to lst1 and the second part to lst2
         lst1 = []
         lst2 = []
