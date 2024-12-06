@@ -1,17 +1,20 @@
+from typing import List, Tuple
+
+
 def pretty_print(grid: list[list[str]]) -> None:
     for row in grid:
         print("".join(row))
     print("\n")
 
 
-def question01(grid: list[list[str]], debug=False) -> int:
+def question01(grid: list[list[str]], debug=False) -> List[Tuple[int, int]]:
     """
     The gris is a map. An arrow (^v<>) indicates the direction of movement of the patrol.
     Obstacles are marked with #.
     While no obstacle, the patrol moves in the direction of the arrow in the grid.
     When the patrol faces an obstacle, it moves to the next direction in the following order: ^, >, v, <.
     The patrol stops when they leave the grid. Mark the path of the patrol with 'X'.
-    Return the number of 'X' in the grid.
+    Return the path of the patrol.
     """
     grid = [list(row) for row in grid]
     rows = len(grid)
@@ -36,12 +39,12 @@ def question01(grid: list[list[str]], debug=False) -> int:
     curr_dir = grid[r][c]
 
     # Mark path with X
-    count = 0
+    path = []
     while 0 <= r < rows and 0 <= c < cols:
         # Mark current position
         if grid[r][c] != "X":
             grid[r][c] = "X"
-            count += 1
+            path.append((r, c))
 
         # Get next position
         dr, dc = directions[curr_dir]
@@ -58,7 +61,7 @@ def question01(grid: list[list[str]], debug=False) -> int:
         if debug:
             pretty_print(grid)
 
-    return count
+    return path
 
 
 def question02(grid: list[list[str]], debug=False) -> int:
@@ -113,18 +116,20 @@ def question02(grid: list[list[str]], debug=False) -> int:
         if start_r != -1:
             break
 
+    #  get the path of the patrol
+    path = question01(grid)
+
     # Try each empty position
     loop_count = 0
-    for r in range(rows):
-        for c in range(cols):
-            if grid[r][c] == "." and (r != start_r or c != start_c):
-                # Try placing obstacle
-                grid[r][c] = "#"
-                if is_loop(grid, start_r, start_c):
-                    loop_count += 1
-                    if debug:
-                        pretty_print(grid)
-                grid[r][c] = "."  # Reset
+    for r, c in path:
+        if r != start_r or c != start_c:
+            # Try placing obstacle
+            grid[r][c] = "#"
+            if is_loop(grid, start_r, start_c):
+                loop_count += 1
+                if debug:
+                    pretty_print(grid)
+            grid[r][c] = "."  # Reset
 
     return loop_count
 
@@ -143,7 +148,7 @@ if __name__ == "__main__":
         "#.........",
         "......#...",
     ]
-    assert question01(example_grid) == 41
+    assert len(question01(example_grid)) == 41
     assert question02(example_grid) == 6
 
     grid = []
@@ -151,5 +156,5 @@ if __name__ == "__main__":
         for line in f:
             grid.append(line.strip())
 
-        print(question01(grid))
+        print(len(question01(grid)))
         print(question02(grid))
